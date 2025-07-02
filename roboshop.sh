@@ -9,13 +9,20 @@ INSTANCES=("mongodb" "redis" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipp
 
 for instance in ${INSTANCES[@]}
 do
+    do
+    if [ "$instance" = "frontend" ]; then
+        tag_value="frontend"
+    else
+        tag_value="$instance"
+    fi
+
     INSTANCE_ID=$(aws ec2 run-instances \
         --image-id ami-09c813fb71547fc4f \
         --instance-type t2.micro \
         --security-group-ids sg-0aa27df1889c9933e \
-        --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=test}]' --query "Instances[0].InstanceId" --output text)
+        --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value='$tag_value'}]' --query "Instances[0].InstanceId" --output text)
 
-    if [ $instance -ne "frontend" ]
+    if [ $instance = "frontend" ]
     then
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)
     else
@@ -32,7 +39,7 @@ do
     fi
 
     aws route53 change-resource-record-sets --hosted-zone-id $ZONE_ID --change-batch '{
-        "Comment": "Creating record set for $instance",
+        "Comment": "Creating record set for '$instance'",
         "Changes": [{
         "Action": "UPSERT",
         "ResourceRecordSet": {
