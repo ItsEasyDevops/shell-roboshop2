@@ -17,11 +17,34 @@ do
 
     if [ $instance -ne "frontend" ]
     then
-        aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text
+        IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)
     else
-        aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text
+        IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
     fi
 
-    echo "$instance instance created with IP Address: $INSTANCE_ID"
+    echo "$instance instance created with IP Address: $IP"
+
+    if [ $instance eq "frontend" ]
+    then
+        record_name=$DOMAIN_NAME
+    else
+        record_name=$instance.$DOMAIN_NAME
+    fi
+
+    aws route53 change-resource-record-sets --hosted-zone-id $ZONE_ID --change-batch '{
+        "Comment": "Creating record set for $instance",
+        "Changes": [{
+        "Action": "UPSERT",
+        "ResourceRecordSet": {
+        "Name": "'$record_name'",
+        "Type": "A",
+        "TTL": 1,
+        "ResourceRecords": [{
+            "Value": "'$IP'"
+          }]
+        }
+        }]
+    }'    
+  
 done
 
