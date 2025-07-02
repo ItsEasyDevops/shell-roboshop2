@@ -9,7 +9,6 @@ INSTANCES=("mongodb" "redis" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipp
 
 for instance in ${INSTANCES[@]}
 do
-    do
     if [ "$instance" = "frontend" ]; then
         tag_value="frontend"
     else
