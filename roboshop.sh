@@ -9,7 +9,7 @@ INSTANCES=("mongodb" "redis" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipp
 
 for instance in ${INSTANCES[@]}
 do
-    if [ "$instance" eq "frontend" ]; then
+    if [ "$instance" -eq "frontend" ]; then
         tag_value="frontend"
     else
         tag_value="$instance"
@@ -30,7 +30,7 @@ do
 
     echo "$instance instance created with IP Address: $IP"
 
-    if [ $instance eq "frontend" ]
+    if [ $instance -eq "frontend" ]
     then
         record_name=$DOMAIN_NAME
     else
