@@ -38,6 +38,8 @@ do
         record_name=$instance.$DOMAIN_NAME
     fi
 
+    echo "Updating $record_name with IP: $IP"
+
     aws route53 change-resource-record-sets --hosted-zone-id $ZONE_ID --change-batch '{
         "Comment": "Creating record set for '$instance'",
         "Changes": [{
