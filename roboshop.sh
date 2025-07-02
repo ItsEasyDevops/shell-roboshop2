@@ -9,7 +9,7 @@ INSTANCES=("mongodb" "redis" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipp
 
 for instance in ${INSTANCES[@]}
 do
-    if [ "$instance" = "frontend" ]; then
+    if [ "$instance" eq "frontend" ]; then
         tag_value="frontend"
     else
         tag_value="$instance"
@@ -21,7 +21,7 @@ do
         --security-group-ids sg-0aa27df1889c9933e \
         --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value='$tag_value'}]' --query "Instances[0].InstanceId" --output text)
 
-    if [ $instance = "frontend" ]
+    if [ $instance eq "frontend" ]
     then
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)
     else
