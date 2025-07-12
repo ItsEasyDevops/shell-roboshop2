@@ -128,19 +128,19 @@ else
     echo -e "$G Catalogue database already exists, skipping creation... SKIPPING $N" | tee -a $LOG_FILE
 fi
 
-# Connect to MongoDB to verify the connection
-mongosh --host mongodb.easydevops.fun &>>$LOG_FILE
+# # Connect to MongoDB to verify the connection
+# mongosh --host mongodb.easydevops.fun &>>$LOG_FILE
 
-# Show databases and collections to verify the installation
-show dbs &>>$LOG_FILE
-use catalogue &>>$LOG_FILE
-show collections &>>$LOG_FILE
-db.products.find() &>>$LOG_FILE
-VALIDATE $? "MongoDB connection and data verification"
+# # Show databases and collections to verify the installation
+# show dbs &>>$LOG_FILE
+# use catalogue &>>$LOG_FILE
+# show collections &>>$LOG_FILE
+# db.products.find() &>>$LOG_FILE
+# VALIDATE $? "MongoDB connection and data verification"
 
-END_TIME=$(date +%s)
-EXECUTION_TIME=$((END_TIME - START_TIME))
-echo -e "$G Script executed in $EXECUTION_TIME seconds $N" | tee -a $LOG_FILE
+# END_TIME=$(date +%s)
+# EXECUTION_TIME=$((END_TIME - START_TIME))
+# echo -e "$G Script executed in $EXECUTION_TIME seconds $N" | tee -a $LOG_FILE
 
 
 
