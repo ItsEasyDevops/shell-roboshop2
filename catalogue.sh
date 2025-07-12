@@ -73,12 +73,16 @@ else
 fi
 
 # Create application directory
-mkdir -p /app
+mkdir -p /app &>>$LOG_FILE
+VALIDATE $? "Application directory creation"
 
 # Download the application code
 # The application code is downloaded from a remote server
 # The code is downloaded as a zip file and extracted to the /app directory
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
+VALIDATE $? "Catalogue application code download"
+
+
 rm -rf /app/* &>>$LOG_FILE
 cd /app &>>$LOG_FILE
 unzip /tmp/catalogue.zip &>>$LOG_FILE
@@ -86,7 +90,9 @@ VALIDATE $? "Catalogue application code download and extraction"
 
 # Install NodeJS dependencies
 npm install &&>>$LOG_FILE
+VALIDATE $? "Catalogue application dependencies installation"
 
+# Copy the systemd service file for the catalogue service
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOG_FILE
 VALIDATE $? "Catalogue service file copy"
 
