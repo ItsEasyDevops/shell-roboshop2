@@ -1,5 +1,6 @@
 #!/bin/bash
 
+START_TIME=$(date +%s)
 USERID=$(id -u)
 
 R="\e[31m"
@@ -89,6 +90,10 @@ VALIDATE $? "Copying custom nginx configuration file"
 # Restart Nginx Service
 systemctl restart nginx &>>$LOG_FILE
 VALIDATE $? "Restarting Nginx Service"
+
+END_TIME=$(date +%s)
+EXECUTION_TIME=$((END_TIME - START_TIME))
+echo -e "$G Script executed in $EXECUTION_TIME seconds $N" | tee -a $LOG_FILE
 
 
 

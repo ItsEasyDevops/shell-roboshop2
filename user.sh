@@ -45,29 +45,53 @@ VALIDATE(){
     fi
 }
 
-# Disable Redis module
-dnf module disable redis -y &>>$LOG_FILE
-VALIDATE $? "Redis Module Disable"
+# Disable NodeJS module
+dnf module disable nodejs -y &>>$LOG_FILE
+VALIDATE $? "NodeJS Module Disable"
 
-# Download Redis 7 repo file   
-dnf module enable redis:7 -y &>>$LOG_FILE
-VALIDATE $? "Redis 7 Module Enable"
+# Enable NodeJS 20 repo file
+dnf module enable nodejs:20 -y &>>$LOG_FILE
+VALIDATE $? "NodeJS 20 Module Enable"
 
-# Install Redis
-dnf install redis -y &>>$LOG_FILE
-VALIDATE $? "Redis Installation"
+# Install NodeJS
+dnf install nodejs -y &>>$LOG_FILE
+VALIDATE $? "NodeJS Installation"
 
-# Update Redis Configuration
-sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/ c protected-mode no' /etc/redis/redis.conf &>>$LOG_FILE
-VALIDATE $? "Edit redis.conf file for remote access & disable protected mode"
+# Create application user - roboshop
+useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop    &>>$LOG_FILE
+VALIDATE $? "Roboshop User Creation"
 
-# Enable Redis Service
-systemctl enable redis &>>$LOG_FILE
-VALIDATE $? "Redis Service Enable"  
+mkdir /app &>>$LOG_FILE
+VALIDATE $? "Application Directory Creation"
 
-# Start Redis Service
-systemctl start redis &>>$LOG_FILE
-VALIDATE $? "Redis Service Start"
+# Download the user application code
+curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip  &>>$LOG_FILE
+VALIDATE $? "User Application Download"  
+
+# Unzip the user application code
+cd $SCRIPT_DIR/app 
+unzip $SCRIPT_DIR/tmp/user.zip &>>$LOG_FILE
+VALIDATE $? "User Application Unzip"
+
+# Install NodeJS dependencies
+npm install &>>$LOG_FILE
+VALIDATE $? "User Application Dependencies Installation"
+
+cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOG_FILE
+VALIDATE $? "User Service File Copy"
+
+# Reload systemd to recognize the new service
+systemctl daemon-reload &>>$LOG_FILE
+VALIDATE $? "Systemd Daemon Reload"
+
+# Enable User Service
+systemctl enable user &>>$LOG_FILE
+VALIDATE $? "User Service Enable"
+
+# Start User Service
+systemctl start user &>>$LOG_FILE
+VALIDATE $? "User Service Start"
+
 
 END_TIME=$(date +%s)
 EXECUTION_TIME=$((END_TIME - START_TIME))

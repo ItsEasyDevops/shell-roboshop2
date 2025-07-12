@@ -1,5 +1,6 @@
 #!/bin/bash
 
+START_TIME=$(date +%s)
 USERID=$(id -u)
 
 R="\e[31m"
@@ -130,6 +131,10 @@ use catalogue &>>$LOG_FILE
 show collections &>>$LOG_FILE
 db.products.find() &>>$LOG_FILE
 VALIDATE $? "MongoDB connection and data verification"
+
+END_TIME=$(date +%s)
+EXECUTION_TIME=$((END_TIME - START_TIME))
+echo -e "$G Script executed in $EXECUTION_TIME seconds $N" | tee -a $LOG_FILE
 
 
 
