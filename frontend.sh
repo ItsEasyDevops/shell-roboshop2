@@ -65,22 +65,22 @@ systemctl start nginx &>>$LOG_FILE
 VALIDATE $? "Nginx Service Start"
 
 # Remove the default content that web server is serving.
-rm -rf $SCRIPT_DIR/usr/share/nginx/html/* &>>$LOG_FILE
+rm -rf /usr/share/nginx/html/* &>>$LOG_FILE
 VALIDATE $? "Removing the default content"
 
 # Download the frontend content from S3 bucket
-curl -o $SCRIPT_DIR/tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
 VALIDATE $? "Downloading frontend content"
 
-cd $SCRIPT_DIR/usr/share/nginx/html
+cd /usr/share/nginx/html
 VALIDATE $? "Changing directory to /usr/share/nginx/html"
 
 # Unzip the downloaded content
-unzip $SCRIPT_DIR/tmp/frontend.zip &>>$LOG_FILE
+unzip /tmp/frontend.zip &>>$LOG_FILE
 VALIDATE $? "Unzipping frontend content"
 
 # Removing the nginx default configuration file
-rm -rf $SCRIPT_DIR/etc/nginx/nginx.conf &>>$LOG_FILE
+rm -rf /etc/nginx/nginx.conf &>>$LOG_FILE
 VALIDATE $? "Removing default nginx configuration file"
 
 # Copy the custom nginx configuration file
