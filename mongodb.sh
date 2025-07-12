@@ -11,6 +11,7 @@ N="\e[0m"
 LOGS_FOLDER="/var/log/roboshop-logs"
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
+SCRIPT_DIR=$(pwd)
 
 mkdir -p $LOGS_FOLDER
 echo -e "Script Name: $SCRIPT_NAME executing at $(date)" | tee -a $LOG_FILE
@@ -45,7 +46,7 @@ VALIDATE(){
 }
 
 # MongoDB Installation Script
-cp mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOG_FILE
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOG_FILE
 VALIDATE $? "MongoDB Repo File Copy"
 
 # Install MongoDB
