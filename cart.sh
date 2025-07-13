@@ -68,7 +68,8 @@ else
 fi
 
 # Create application directory
-mkdir -p /app
+mkdir -p /app &>>$LOG_FILE
+VALIDATE $? "Create Application Directory"
 
 # Download Cart Application
 curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>$LOG_FILE
