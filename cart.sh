@@ -68,7 +68,7 @@ else
 fi
 
 # Create application directory
-mkdir -p /app &>>$LOG_FILE
+mkdir -p $SCRIPT_DIR/app &>>$LOG_FILE
 VALIDATE $? "Create Application Directory"
 
 # Download Cart Application

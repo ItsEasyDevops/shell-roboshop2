@@ -67,7 +67,7 @@ else
     echo -e "$G roboshop user already exists, skipping creation... SKIPPING $N" | tee -a $LOG_FILE
 fi
 
-mkdir -p/app &>>$LOG_FILE
+mkdir -p /app &>>$LOG_FILE
 VALIDATE $? "Application Directory Creation"
 
 # Download the user application code
