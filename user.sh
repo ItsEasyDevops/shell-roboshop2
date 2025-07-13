@@ -78,7 +78,7 @@ rm -rf $SCRIPT_DIR/app/* &>>$LOG_FILE
 
 # Unzip the user application code
 cd $SCRIPT_DIR/app 
-unzip $SCRIPT_DIR/tmp/user.zip &>>$LOG_FILE
+unzip /tmp/user.zip &>>$LOG_FILE
 VALIDATE $? "User Application Unzip"
 
 # Install NodeJS dependencies
