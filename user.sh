@@ -67,12 +67,14 @@ else
     echo -e "$G roboshop user already exists, skipping creation... SKIPPING $N" | tee -a $LOG_FILE
 fi
 
-mkdir -p /app &>>$LOG_FILE
+mkdir -p $SCRIPT_DIR/app &>>$LOG_FILE
 VALIDATE $? "Application Directory Creation"
 
 # Download the user application code
 curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip  &>>$LOG_FILE
 VALIDATE $? "User Application Download"  
+
+rm -rf $SCRIPT_DIR/app/* &>>$LOG_FILE
 
 # Unzip the user application code
 cd $SCRIPT_DIR/app 
