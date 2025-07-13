@@ -75,6 +75,8 @@ VALIDATE $? "Create Application Directory"
 curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>$LOG_FILE
 VALIDATE $? "Download Cart Application"
 
+rm -rf $SCRIPT_DIR/app/* &>>$LOG_FILE
+
 # Extract Cart Application
 cd $SCRIPT_DIR/app
 unzip /tmp/cart.zip &>>$LOG_FILE
