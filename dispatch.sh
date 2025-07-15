@@ -71,7 +71,7 @@ curl -L -o /tmp/dispatch.zip https://roboshop-artifacts.s3.amazonaws.com/dispatc
 VALIDATE $? "Dispatch service code download"
 
 # Remove any existing files in the application directory
-rm -rf $SCRIPT_DIR/app/* &>>$LOG_FILE
+rm -rf /app/* &>>$LOG_FILE
 
 # Unzip the downloaded file to the application directory
 cd /app &>>$LOG_FILE
