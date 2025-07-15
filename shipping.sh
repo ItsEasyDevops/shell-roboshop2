@@ -68,6 +68,7 @@ curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shippin
 VALIDATE $? "Shipping Code Download"
 
 # Unzip the downloaded code
+rm -rf $SCRIPT_DIR/app/* &>>$LOG_FILE
 cd $SCRIPT_DIR/app 
 unzip /tmp/shipping.zip
 
@@ -98,17 +99,26 @@ VALIDATE $? "Shipping Service Start"
 dnf install mysql -y &>>$LOG_FILE
 VALIDATE $? "MySQL Client Installation"
 
-# Load the shipping schema
-mysql -h mysql.easydevops.fun -uroot -pRoboShop@1 < /app/db/schema.sql  &>>$LOG_FILE
-VALIDATE $? "Shipping Schema Load"
+# Check if the shipping schema already exists'
+echo -e "$Y Checking if shipping schema already exists... $N" | tee -a $LOG_FILE
+mysql -h mysql.easydevops.fun -uroot -pRoboShop@1 -e 'use cities' &>>$LOG_FILE
 
-# Create the application user for shipping
-mysql -h mysql.easydevops.fun -uroot -pRoboShop@1 < /app/db/app-user.sql    &>>$LOG_FILE
-VALIDATE $? "Shipping App User Creation"
+if [ $? -ne 0 ];
+then
+    # Load the shipping schema
+    mysql -h mysql.easydevops.fun -uroot -pRoboShop@1 < /app/db/schema.sql  &>>$LOG_FILE
+    VALIDATE $? "Shipping Schema Load"
 
-# Load the master data for shipping
-mysql -h mysql.easydevops.fun -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
-VALIDATE $? "Shipping Master Data Load"
+    # Create the application user for shipping
+    mysql -h mysql.easydevops.fun -uroot -pRoboShop@1 < /app/db/app-user.sql    &>>$LOG_FILE
+    VALIDATE $? "Shipping App User Creation"
+
+    # Load the master data for shipping
+    mysql -h mysql.easydevops.fun -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
+    VALIDATE $? "Shipping Master Data Load"
+else
+    echo -e "$G Shipping schema already exists, skipping schema load... SKIPPING $N" | tee -a $LOG_FILE
+fi  
 
 # Restart the shipping service to apply changes
 systemctl restart shipping &>>$LOG_FILE
