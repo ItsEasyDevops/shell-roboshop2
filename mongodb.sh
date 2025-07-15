@@ -62,7 +62,7 @@ systemctl start mongod &>>$LOG_FILE
 VALIDATE $? "MongoDB Service Start"
 
 # Update MongoDB Configuration
-sed -i 's/127.0.0.1/0.0.0.0/' /etc/mongod.conf &>>$LOG_FILE
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf &>>$LOG_FILE
 VALIDATE $? "Edit mongod.conf file for remote access"
 
 # Restart MongoDB Service to apply changes
