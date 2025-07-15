@@ -69,9 +69,11 @@ mkdir -p $SCRIPT_DIR/app
 curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>>$LOG_FILE
 VALIDATE $? "Payment service code download" 
 
+rm -rf $SCRIPT_DIR/app/* &>>$LOG_FILE
+
 # Unzip the downloaded file to the application directory
 cd $SCRIPT_DIR/app     &>>$LOG_FILE  
-unzip $SCRIPT_DIR/tmp/payment.zip  &>>$LOG_FILE          
+unzip /tmp/payment.zip  &>>$LOG_FILE          
 VALIDATE $? "Payment service code extraction"
 
 # Install the required Python dependencies
