@@ -62,7 +62,7 @@ systemctl start rabbitmq-server &>>$LOG_FILE
 VALIDATE $? "RabbitMQ Start"
 
 # Check if the roboshop user exists
-id roboshop &>>$LOG_FILE
+id rabbitmq &>>$LOG_FILE
 
 if [ $? -ne 0 ];
 then
