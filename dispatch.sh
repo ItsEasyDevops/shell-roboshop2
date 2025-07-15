@@ -70,16 +70,26 @@ VALIDATE $? "Application directory creation"
 curl -L -o /tmp/dispatch.zip https://roboshop-artifacts.s3.amazonaws.com/dispatch-v3.zip &>>$LOG_FILE
 VALIDATE $? "Dispatch service code download"
 
+# Remove any existing files in the application directory
+rm -rf $SCRIPT_DIR/app/* &>>$LOG_FILE
+
 # Unzip the downloaded file to the application directory
 cd /app &>>$LOG_FILE
 unzip /tmp/dispatch.zip &>>$LOG_FILE
 VALIDATE $? "Dispatch service code extraction"
 
+
+# Initialize Go module only if go.mod doesn't exist
+if [ ! -f go.mod ]; then
+  go mod init dispatch &>>$LOG_FILE
+  VALIDATE $? "Go module initialization"
+fi
+
 # Lets download the dependencies & build the software.
-go mod init dispatch
 go get &>>$LOG_FILE
 go build &>>$LOG_FILE
 VALIDATE $? "Dispatch service build"
+
 
 # Copy the systemd service file to the appropriate directory
 cp $SCRIPT_DIR/dispatch.service /etc/systemd/system/dispatch.service &>>$LOG_FILE
