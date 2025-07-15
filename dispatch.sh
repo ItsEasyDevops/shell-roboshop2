@@ -11,7 +11,7 @@ N="\e[0m"
 LOGS_FOLDER="/var/log/roboshop-logs"
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
-SCRIPT_DIR=$pwd
+SCRIPT_DIR=$(pwd)
 
 mkdir -p $LOGS_FOLDER
 echo -e "Script Name: $SCRIPT_NAME executing at $(date)" | tee -a $LOG_FILE
@@ -49,9 +49,18 @@ VALIDATE(){
 dnf install golang -y &>>$LOG_FILE
 VALIDATE $? "Golang Installation"
 
-# Create a system user for roboshop with no login shell and home directory
-useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-VALIDATE $? "Roboshop user creation"
+# Check if the roboshop user exists
+id roboshop &>>$LOG_FILE
+
+# Add roboshop user
+if [ $? -ne 0 ];
+then
+    echo -e "$Y roboshop user does not exist, creating it now... $N" | tee -a $LOG_FILE
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
+    VALIDATE $? "roboshop user creation"
+else
+    echo -e "$G roboshop user already exists, skipping creation... SKIPPING $N" | tee -a $LOG_FILE
+fi
 
 # Create application directory
 mkdir -p $SCRIPT_DIR/app &>>$LOG_FILE
