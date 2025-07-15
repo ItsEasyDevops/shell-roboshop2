@@ -57,6 +57,7 @@ VALIDATE $? "NodeJS 20 Module Enable"
 dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "NodeJS Installation"
 
+# Add roboshop user
 id roboshop &>>$LOG_FILE
 if [ $? -ne 0 ];
 then

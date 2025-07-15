@@ -50,8 +50,15 @@ dnf install maven -y &>>$LOG_FILE
 VALIDATE $? "Maven Installation"
 
 # Add roboshop user
-useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-VALIDATE $? "Roboshop User Creation"
+id roboshop &>>$LOG_FILE
+if [ $? -ne 0 ];
+then
+    echo -e "$Y roboshop user does not exist, creating it now... $N" | tee -a $LOG_FILE
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
+    VALIDATE $? "roboshop user creation"
+else
+    echo -e "$G roboshop user already exists, skipping creation... SKIPPING $N" | tee -a $LOG_FILE
+fi
 
 # Create application directory
 mkdir -p $SCRIPT_DIR/app &>>$LOG_FILE
