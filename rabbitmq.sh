@@ -61,12 +61,20 @@ VALIDATE $? "RabbitMQ Enable"
 systemctl start rabbitmq-server &>>$LOG_FILE
 VALIDATE $? "RabbitMQ Start"
 
-# Add roboshop user to RabbitMQ
-rabbitmqctl add_user roboshop roboshop123 &>>$LOG_FILE
-VALIDATE $? "RabbitMQ User Creation"
+# Check if the roboshop user exists
+id roboshop &>>$LOG_FILE
 
-rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>>$LOG_FILE
-VALIDATE $? "RabbitMQ User Permissions"
+if [ $? -ne 0 ];
+then
+    # Add roboshop user to RabbitMQ
+    rabbitmqctl add_user roboshop roboshop123 &>>$LOG_FILE
+    VALIDATE $? "RabbitMQ User Creation"
+
+    rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>>$LOG_FILE
+    VALIDATE $? "RabbitMQ User Permissions"
+else
+    echo -e "$G roboshop user already exists, skipping creation... SKIPPING $N" | tee -a $LOG_FILE
+fi
 
 END_TIME=$(date +%s)
 EXECUTION_TIME=$((END_TIME - START_TIME))
