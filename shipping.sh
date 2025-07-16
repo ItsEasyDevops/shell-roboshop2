@@ -83,7 +83,8 @@ VALIDATE $? "Maven Package Creation"
 mv $SCRIPT_DIR/app/target/shipping-1.0.jar $SCRIPT_DIR/app/shipping.jar
 
 # Restore the db directory
-cp -r /tmp/db-backup $SCRIPT_DIR/app/db
+mkdir -p $SCRIPT_DIR/app/db
+cp -r /tmp/db-backup/* $SCRIPT_DIR/app/db
 
 cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service &>>$LOG_FILE
 VALIDATE $? "Shipping Service Copy"
