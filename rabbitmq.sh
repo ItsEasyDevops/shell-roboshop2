@@ -46,7 +46,7 @@ VALIDATE(){
 }
 
 # RabbitMQ Repository setup
-cp $SCRIPT_DIR/rabbitmq.repo /etc/yum.repos.d/ &>>$LOG_FILE
+cp $SCRIPT_DIR/rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo &>>$LOG_FILE
 VALIDATE $? "RabbitMQ Repo Copy"
 
 # Install rabbitmq-server
