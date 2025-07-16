@@ -63,7 +63,7 @@ else
 fi
 
 # Create application directory
-mkdir -p $SCRIPT_DIR/app &>>$LOG_FILE
+mkdir -p /app &>>$LOG_FILE
 VALIDATE $? "Application directory creation"
 
 # Download the dispatch service code
@@ -75,7 +75,7 @@ rm -rf /app/* &>>$LOG_FILE
 
 # Unzip the downloaded file to the application directory
 cd /app &>>$LOG_FILE
-unzip /tmp/dispatch.zip &>>$LOG_FILE
+unzip -o /tmp/dispatch.zip &>>$LOG_FILE
 VALIDATE $? "Dispatch service code extraction"
 
 
@@ -104,8 +104,8 @@ systemctl enable dispatch &>>$LOG_FILE
 VALIDATE $? "Dispatch service enable"
 
 # Start the dispatch service
-systemctl start dispatch &>>$LOG_FILE
-VALIDATE $? "Dispatch service start"
+systemctl restart dispatch &>>$LOG_FILE
+VALIDATE $? "Dispatch service restart"
 
 END_TIME=$(date +%s)
 EXECUTION_TIME=$((END_TIME - START_TIME))
