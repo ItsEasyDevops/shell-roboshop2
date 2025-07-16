@@ -73,7 +73,7 @@ cd $SCRIPT_DIR/app
 unzip /tmp/shipping.zip
 
 # Preserve the db folder for schema loading later
-cp -r db /tmp/db-backup
+cp -r db/* /tmp/db-backup
 
 # Mvn clean package
 mvn clean package   &>>$LOG_FILE
