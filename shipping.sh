@@ -72,6 +72,9 @@ rm -rf $SCRIPT_DIR/app/* &>>$LOG_FILE
 cd $SCRIPT_DIR/app 
 unzip /tmp/shipping.zip
 
+# Preserve the db folder for schema loading later
+cp -r db /tmp/db-backup
+
 # Mvn clean package
 mvn clean package   &>>$LOG_FILE
 VALIDATE $? "Maven Package Creation"
@@ -79,6 +82,8 @@ VALIDATE $? "Maven Package Creation"
 # Move the jar file to the app directory
 mv $SCRIPT_DIR/app/target/shipping-1.0.jar $SCRIPT_DIR/app/shipping.jar
 
+# Restore the db directory
+cp -r /tmp/db-backup $SCRIPT_DIR/app/db
 
 cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service &>>$LOG_FILE
 VALIDATE $? "Shipping Service Copy"
