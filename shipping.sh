@@ -24,6 +24,9 @@ else
     echo -e "$G You are running this script with root access $N" | tee -a $LOG_FILE
 fi
 
+Please enter the root password for MySQL:
+read -s MYSQL_ROOT_PASSWORD
+
 VALIDATE() {
     if [ $1 -eq 0 ]; then
         echo -e "$2 is ... $G SUCCESS $N" | tee -a $LOG_FILE
@@ -48,36 +51,24 @@ else
 fi
 
 # Create application directory
-mkdir -p $SCRIPT_DIR/app &>>$LOG_FILE
+mkdir -p /app &>>$LOG_FILE
 
 # Download the shipping service code
 curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$LOG_FILE
 VALIDATE $? "Shipping Code Download"
 
 # Clean app directory and unzip
-rm -rf $SCRIPT_DIR/app/* &>>$LOG_FILE
-cd $SCRIPT_DIR/app
+rm -rf /app/* &>>$LOG_FILE
+cd /app
 unzip /tmp/shipping.zip &>>$LOG_FILE
 VALIDATE $? "Shipping Code Extraction"
-
-# Backup db files
-rm -rf /tmp/db-backup
-mkdir -p /tmp/db-backup
-cp -r db/* /tmp/db-backup
-VALIDATE $? "DB Files Backup"
 
 # Maven build
 mvn clean package &>>$LOG_FILE
 VALIDATE $? "Maven Package Creation"
 
 # Move jar file
-mv $SCRIPT_DIR/app/target/shipping-1.0.jar $SCRIPT_DIR/app/shipping.jar
-
-# Restore db files
-rm -rf $SCRIPT_DIR/app/db
-mkdir -p $SCRIPT_DIR/app/db
-cp -r /tmp/db-backup/* $SCRIPT_DIR/app/db
-VALIDATE $? "DB Files Restore"
+mv /app/target/shipping-1.0.jar /app/shipping.jar
 
 # Copy service file
 cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service &>>$LOG_FILE
@@ -91,7 +82,7 @@ VALIDATE $? "Systemd Daemon Reload"
 systemctl enable shipping &>>$LOG_FILE
 VALIDATE $? "Shipping Service Enable"
 
-systemctl restart shipping &>>$LOG_FILE
+systemctl start shipping &>>$LOG_FILE
 VALIDATE $? "Shipping Service Start"
 
 # Install MySQL client
@@ -100,16 +91,16 @@ VALIDATE $? "MySQL Client Installation"
 
 # Check if shipping schema exists
 echo -e "$Y Checking if shipping schema already exists... $N" | tee -a $LOG_FILE
-mysql -h mysql.easydevops.fun -uroot -pRoboShop@1 -e 'use cities' &>>$LOG_FILE
+mysql -h mysql.easydevops.fun -uroot -p$MYSQL_ROOT_PASSWORD -e 'use cities' &>>$LOG_FILE
 
 if [ $? -ne 0 ]; then
-    mysql -h mysql.easydevops.fun -uroot -pRoboShop@1 < $SCRIPT_DIR/app/db/schema.sql &>>$LOG_FILE
+    mysql -h mysql.easydevops.fun -uroot -p$MYSQL_ROOT_PASSWORD < $SCRIPT_DIR/app/db/schema.sql &>>$LOG_FILE
     VALIDATE $? "Shipping Schema Load"
 
-    mysql -h mysql.easydevops.fun -uroot -pRoboShop@1 < $SCRIPT_DIR/app/db/app-user.sql &>>$LOG_FILE
+    mysql -h mysql.easydevops.fun -uroot -p$MYSQL_ROOT_PASSWORD < $SCRIPT_DIR/app/db/app-user.sql &>>$LOG_FILE
     VALIDATE $? "Shipping App User Creation"
 
-    mysql -h mysql.easydevops.fun -uroot -pRoboShop@1 < $SCRIPT_DIR/app/db/master-data.sql &>>$LOG_FILE
+    mysql -h mysql.easydevops.fun -uroot -p$MYSQL_ROOT_PASSWORD < $SCRIPT_DIR/app/db/master-data.sql &>>$LOG_FILE
     VALIDATE $? "Shipping Master Data Load"
 else
     echo -e "$G Shipping schema already exists, skipping schema load... SKIPPING $N" | tee -a $LOG_FILE
