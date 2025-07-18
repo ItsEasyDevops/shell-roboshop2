@@ -27,6 +27,9 @@ else
     echo -e "$G You are running this script with root access $N" | tee -a $LOG_FILE
 fi
 
+echo "Pleaes enter the root password for MySQL:"
+read -s MYSQL_ROOT_PASSWORD
+
 
 # VALIDATE function to check the exit status of the last command executed
 # $1 - Exit status of the last command
@@ -58,7 +61,7 @@ systemctl start mysqld &>>$LOG_FILE
 VALIDATE $? "MySQL Start"
 
 # Set MySQL root password
-mysql_secure_installation --set-root-pass RoboShop@1 &>>$LOG_FILE
+mysql_secure_installation --set-root-pass $MYSQL_ROOT_PASSWORD &>>$LOG_FILE
 VALIDATE $? "MySQL Secure Installation"
 
 END_TIME=$(date +%s)
