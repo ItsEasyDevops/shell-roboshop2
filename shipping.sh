@@ -94,13 +94,13 @@ echo -e "$Y Checking if shipping schema already exists... $N" | tee -a $LOG_FILE
 mysql -h mysql.easydevops.fun -uroot -p$MYSQL_ROOT_PASSWORD -e 'use cities' &>>$LOG_FILE
 
 if [ $? -ne 0 ]; then
-    mysql -h mysql.easydevops.fun -uroot -p$MYSQL_ROOT_PASSWORD < $SCRIPT_DIR/app/db/schema.sql &>>$LOG_FILE
+    mysql -h mysql.easydevops.fun -uroot -p$MYSQL_ROOT_PASSWORD < /app/db/schema.sql &>>$LOG_FILE
     VALIDATE $? "Shipping Schema Load"
 
-    mysql -h mysql.easydevops.fun -uroot -p$MYSQL_ROOT_PASSWORD < $SCRIPT_DIR/app/db/app-user.sql &>>$LOG_FILE
+    mysql -h mysql.easydevops.fun -uroot -p$MYSQL_ROOT_PASSWORD < /app/db/app-user.sql &>>$LOG_FILE
     VALIDATE $? "Shipping App User Creation"
 
-    mysql -h mysql.easydevops.fun -uroot -p$MYSQL_ROOT_PASSWORD < $SCRIPT_DIR/app/db/master-data.sql &>>$LOG_FILE
+    mysql -h mysql.easydevops.fun -uroot -p$MYSQL_ROOT_PASSWORD < /app/db/master-data.sql &>>$LOG_FILE
     VALIDATE $? "Shipping Master Data Load"
 else
     echo -e "$G Shipping schema already exists, skipping schema load... SKIPPING $N" | tee -a $LOG_FILE
