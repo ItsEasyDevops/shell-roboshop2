@@ -24,7 +24,7 @@ else
     echo -e "$G You are running this script with root access $N" | tee -a $LOG_FILE
 fi
 
-Please enter the root password for MySQL:
+echo "Please enter the root password for MySQL:" | tee -a $LOG_FILE
 read -s MYSQL_ROOT_PASSWORD
 
 VALIDATE() {
