@@ -27,7 +27,7 @@ else
     echo -e "$G You are running this script with root access $N" | tee -a $LOG_FILE
 fi
 
-echo "Please enter the root password for MySQL:" | tee -a $LOG_FILE
+echo "Please enter the root password for RABBITMQ:" | tee -a $LOG_FILE
 read -s RABBITMQ_ROOT_PASSWORD
 
 # VALIDATE function to check the exit status of the last command executed
