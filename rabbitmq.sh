@@ -27,6 +27,8 @@ else
     echo -e "$G You are running this script with root access $N" | tee -a $LOG_FILE
 fi
 
+echo "Please enter the root password for MySQL:" | tee -a $LOG_FILE
+read -s RABBITMQ_ROOT_PASSWORD
 
 # VALIDATE function to check the exit status of the last command executed
 # $1 - Exit status of the last command
@@ -67,7 +69,7 @@ rabbitmqctl list_users | grep -w roboshop &>>$LOG_FILE
 if [ $? -ne 0 ];
 then
     # Add roboshop user to RabbitMQ
-    rabbitmqctl add_user roboshop roboshop123 &>>$LOG_FILE
+    rabbitmqctl add_user roboshop $RABBITMQ_ROOT_PASSWORD &>>$LOG_FILE
     VALIDATE $? "RabbitMQ User Creation"
 
     rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>>$LOG_FILE
