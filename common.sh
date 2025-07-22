@@ -122,10 +122,10 @@ system_setup(){
     VALIDATE $? "Systemd daemon reload"
 
     # Start the catalogue service
-    systemctl enable catalogue &>>$LOG_FILE
-    VALIDATE $? "Catalogue service enable"
+    systemctl enable $app_name &>>$LOG_FILE
+    VALIDATE $? "$app_name service enable"
 
     # Start the catalogue service
-    systemctl start catalogue &>>$LOG_FILE
-    VALIDATE $? "Catalogue service start"
+    systemctl start $app_name &>>$LOG_FILE
+    VALIDATE $? "$app_name service start"
 }
