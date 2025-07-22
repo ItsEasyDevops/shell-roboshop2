@@ -7,4 +7,4 @@ check_root
 app_setup
 python3_setup
 system_setup
-print_time
+python_setup
