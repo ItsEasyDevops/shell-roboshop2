@@ -129,3 +129,31 @@ system_setup(){
     systemctl start $app_name &>>$LOG_FILE
     VALIDATE $? "$app_name service start"
 }
+
+
+maven_setup(){
+    # Install Maven
+    dnf install maven -y &>>$LOG_FILE
+    VALIDATE $? "Maven Installation"
+
+    # Maven build
+    mvn clean package &>>$LOG_FILE
+    VALIDATE $? "Maven Package Creation"
+
+    # Move jar file
+    mv /app/target/shipping-1.0.jar /app/shipping.jar
+}
+
+python_setup(){
+    # Install Python3 and dependencies
+    dnf install python3 gcc python3-devel -y &>>$LOG_FILE
+    VALIDATE $? "Python3 and dependencies installation"
+
+    # Install the required Python dependencies
+    pip3 install -r requirements.txt &>>$LOG_FILE
+    VALIDATE $? "Payment service dependencies installation"
+
+    # Copy the systemd service file to the appropriate directory
+    cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service &>>$LOG_FILE
+    VALIDATE $? "Payment service systemd file copy"
+}
