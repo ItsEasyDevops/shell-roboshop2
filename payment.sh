@@ -5,6 +5,6 @@ app_name="payment"
 
 check_root
 app_setup
-python3_setup
-system_setup
 python_setup
+system_setup
+print_time
